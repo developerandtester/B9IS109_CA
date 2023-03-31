@@ -86,10 +86,9 @@ body {
     margin-bottom: 40px;
   }
   
-  .header button {
-    background-color: #fff;
+  .header button {    
     border: none;
-    color: #E74C3C;
+    color: #e9422f;
     font-size: 18px;
     padding: 20px 40px;
   }
