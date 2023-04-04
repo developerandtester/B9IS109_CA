@@ -1,14 +1,19 @@
 from flask import Flask, redirect, url_for,request, render_template,flash
-from flask_mysqldb import MySQL
-from config import Config
+import mysql.connector
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = ''
-app.config.from_object(Config)
+
 
 # Initialize the Flask-MySQL extension
-mysql = MySQL(app)
+
+mydb = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  password="pass",
+  database="pract_database"
+)
 
 # Connect to the MySQL database
 
@@ -17,7 +22,7 @@ mysql = MySQL(app)
 @app.route("/", methods = ['GET',"POST"])
 @app.route("/index", methods = ['GET',"POST"])
 def home():  
-    cursor = mysql.connection.cursor()
+    cursor = mydb.cursor()
     cursor.execute('SELECT * FROM pract_database.tbl_users')
     data = cursor.fetchall()
     cursor.close()
