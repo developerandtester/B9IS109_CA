@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="ticket">
+    <span style="margin-left: 40%;">Tax Receipt</span><br />
+    <img src="~/Content/img/Logo.jpeg" alt="Logo" style="height: 100px; width: 100px; margin-left: 75px;">
+    
+    <p class="centered"><span><b>@System.Configuration.ConfigurationManager.AppSettings["Company"] </b></span><br /></p>
+        <div class="centered">           
+        </div>
+        <span id="HotelName"></span>
+        <br>
+        <span id="BillNo">#@Prefix - @Total.Rows[0]["OrderId"]</span>
+        <span style="margin-left: 90px;" id="BillDate">@Total.Rows[0]["CreatedDate"]</span>
+        <br>
+        <span>@Orders.Rows[0]["DName"]...@Orders.Rows[0]["DMobile"]</span>
+        
+        @* <span style="display: none;" id="CustomerMobile"></span><span style="display: none;" id="CustomerName"></span>*@
+    
+    <table>
+        <thead>
+            <tr class="centered">
+                <th class="quantity">Description</th>
+                <th class="description">Qty</th>
+                <th class="price">Rs</th>
+            </tr>
+        </thead>
+        <tbody id="TblBody">
+            @for (var i = 0; i < Orders.Rows.Count; i++)
+            {
+                <tr class="centered">
+                    <td class="description">
+                        @Orders.Rows[i]["ProdName"] @if (Orders.Rows[i]["HasAddons"].ToString() == "1")
+                                                {
+                                                    <div>-(@Orders.Rows[i]["AddonNames"].ToString())</div>
+                                                }
+                    </td>
+                    <td class="quantity">@Orders.Rows[i]["Qty"]</td>
+                    <td class="price">@Orders.Rows[i]["Price"]</td>
+                </tr>
+            }
+            <tr class="centered">
+                <td class="description">SubTotal: </td>
+                <td class="quantity">@Total.Rows[0]["Qty"]</td>
+                <td class="price">@Total.Rows[0]["Total"]</td>
+            </tr>
+            <tr class="centered">
+                <td class="description">Discount %: @Total.Rows[0]["DiscountPer"]</td>
+                <td class="quantity">Total Savings.</td>
+                @if (Total.Rows[0]["DiscountPer"].ToString() == "0" || Total.Rows[0]["DiscountPer"].ToString() == null || Total.Rows[0]["DiscountPer"].ToString() == "")
+                {
+                    <td class="price"> @Total.Rows[0]["Discount"]</td>
+                }
+                else
+                {
+                    <td class="price"> @Total.Rows[0]["DiscAmt"]</td>
+                }
+            </tr>
+            @if (Total.Rows[0]["IsPromo"].ToString() == "1")
+            {
+                <tr style="border-top:none!important;" class="centered">
+                    <td style="border-top:none!important;">Promo Applied:</td>
+                    <td style="border-top:none!important;">@Total.Rows[0]["PromoApplied"]</td>
+                    <td style="border-top:none!important;"></td>
+                </tr>
+            }
+            <tr class="centered">
+                <td class="description">Shipping Charges: </td>
+                <td class="quantity"></td>
+                <td class="price">@ShippingFee</td>
+            </tr>
+            <tr class="centered">
+                <td class="description">Total: </td>
+                <td class="quantity"></td>
+                <td class="price">@Total.Rows[0]["TotalAftDisc"]</td>
+            </tr>
+            @*@if (Total.Rows[0]["IsTaxApplicable"] == 1)
+                {
+                    for (var i = 0; i < Taxes.Rows.Count; i++)
+                    {
+                        <tr class="centered">
+                            <td class="description"></td>
+                            <td class="quantity">@Taxes.Rows[i]["TaxComp1"] % SGST</td>
+                            <td class="price">@Taxes.Rows[i]["Tax1"]</td>
+                        </tr>
+                        <tr class="centered">
+                            <td class="description"></td>
+                            <td class="quantity">@Taxes.Rows[i]["TaxComp1"]  % CGST</td>
+                            <td class="price">@Taxes.Rows[i]["Tax2"]</td>
+                        </tr>
+                    }
+                    if (@RoundOff != 0)
+                    {
+                        <tr class="centered">
+                            <td class="description"></td>
+                            <td class="quantity">Round Off: </td>
+                            <td class="price">@RoundOff</td>
+                        </tr>
+                    }
+                    <tr class="centered">
+                        <td class="description">Net Payable</td>
+                        <td class="quantity">Rs. </td>
+                        <td class="price">@NetVal.Rows[0]["NetVal"]</td>
+                    </tr>
+                }*@
+        </tbody>
+    </table>
+    <p class="centered">
+        Thanks for your purchase.
+    </p>
+    <p class="centered">
+        @Footer
+    </p>
+    <p class="centered">
+        Powered By - <img style="height: 25px; width: 100px;" src="@System.Configuration.ConfigurationManager.AppSettings["FolderPath"]/Content/img/RapidExLogo.png" />
+    </p>
+    <div class="btn btn-success fixed-bottom panel-footer left Bold" onclick="return HomePage();" style="margin-bottom:0px">Track Order</div>
+    <div class="pagebreak"></div>
+</div>
+{% endblock %}
+  

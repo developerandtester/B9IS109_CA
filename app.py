@@ -32,7 +32,13 @@ def home():
 def login():
      return render_template('/login.html')
 
-
+@app.route("/cart")
+def cart():
+     return render_template('/cart.html')
+   
+@app.route("/successful", methods = ['GET',"POST"])
+def successful():
+    return render_template('/successful.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
