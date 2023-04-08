@@ -2,19 +2,39 @@
 {% block content %}
 
 <div id="cartpage" class="osahan-cart">
-    <div class="p-3 border-bottom">
-        <div class="d-flex align-items-center">
-            <a class="font-weight-bold text-success text-decoration-none" href="" onclick="OrdTypeChange()">
-                <i style="font-size: 30px" class="icofont-rounded-left back-page"></i>
-            </a>
-            <h5 class="font-weight-bold m-0">Cart</h5>
-            <a class="ml-auto" href=""><i style="font-size: 25px;" class="icofont-home text-success"></i></a>
-            <a class="toggle ml-auto" href="#"><i class="icofont-navigation-menu"></i></a>
-        </div>
-    </div>
-    <div class="osahan-body">
+   
+    
     </br>
-    <h5 class="font-weight-bold m-0">Cart is Empty</h5>            
-     </div>
+    {% if cart is defined %}
+    {% set total = [0]  %}
+    {% for key,value in cart.iterrows() %}    
+    {% set _ = total.append(total.pop() + value['amount']|float)  %}
+    {{ value['itemName'] }} {{ value['qty'] }} {{ value['amount'] }}<br>
+    {% endfor %}
+    {{ total[0] }}
+    <button onclick="GoToCheckout()">Go to Checkout</button>
+    {% else %}
+    <div class="osahan-body">
+        <div class="p-3 border-bottom">
+            <div class="d-flex align-items-center">
+                <a class="font-weight-bold text-success text-decoration-none" href="" onclick="OrdTypeChange()">
+                    <i style="font-size: 30px" class="icofont-rounded-left back-page"></i>
+                </a>
+                <h5 class="font-weight-bold m-0">Cart</h5>
+                <a class="ml-auto" href=""><i style="font-size: 25px;" class="icofont-home text-success"></i></a>
+                <a class="toggle ml-auto" href="#"><i class="icofont-navigation-menu"></i></a>
+            </div>
+        </div> <h5 class="font-weight-bold m-0">Cart is Empty</h5>            
+    </div>    
+    {% endif %}
+
+
+   
+   
      <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        function GoToCheckout(){
+            window.location.href = "/checkout";
+        }
+    </script>
 {%endblock%}
