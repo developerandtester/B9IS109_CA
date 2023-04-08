@@ -75,7 +75,7 @@
         "Category": "Desserts",
         "Value": 2.99,
        "img_url":"https://images.pexels.com/photos/2282532/pexels-photo-2282532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-    }
+    },
     {
         "id": 12,
         "Name": "Cheese Cake",
@@ -83,5 +83,4 @@
         "Value": 2.99,
        "img_url":"https://images.pexels.com/photos/2282532/pexels-photo-2282532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
     }
-
 ]

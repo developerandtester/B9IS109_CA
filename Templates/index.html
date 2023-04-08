@@ -2,6 +2,63 @@
 
 
 {% block content %}
+<style>
+  @@media (min-width: 320px) {     
+      .card {
+          margin-right: 10px;
+          margin-left: 10px;
+      }
+      .Qty-btn{
+          font-weight:700;
+      }
+     
+  }
+
+  @@media (min-width: 577px) {
+      .card-deck {
+          display: -ms-flexbox;
+          display: flex;
+          -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+          margin-right: -0px;
+          margin-left: -0px;
+      }
+
+      .card {
+          margin-right: -0px;
+          margin-left: -0px;
+          min-width: 12rem;
+          max-width: 12rem;
+          margin-top: 2rem;
+      }
+      .subcatbody {
+          padding-left: 20%;
+          padding-right: 20%;
+      }
+      .Qty-btn {
+          font-weight: 700;
+      }
+  }
+  .Qty-btn {
+      font-weight: 700;
+      line-height: 34px;
+      height: 35px;
+      align-items: center;
+  }
+
+  .qty-btn-grp {
+      display: -ms-flexbox;
+      display: flex;
+      margin-right: -15px;
+      margin-left: -15px;
+      border: #FF4500;
+      border-style: solid;
+      border-radius: 5px;
+      width: 80px;
+      height: 35px;
+      overflow: hidden;
+  }
+</style> 
   <div class="header">
   <div id="carouselExampleIndicators" class="carousel slide">
   <div class="carousel-indicators">
@@ -33,29 +90,17 @@
 
   <div class="main-content">
     <h1>Welcome to Cloche</h1>
-    <p></p>
-    <button>Order Now</button>  
-    <div class="fab-container">
-      <div class="fab fab-icon-holder" onclick="GetMenu()">
-          <i class="fas"> Menu </i>
-      </div>
-      <div data-ptag="" id="" class="d-flex  align-items-center border-bottom p-3 " style="background-color: #FFFFFF;">
-        <div class="font-weight-bold">
-          <div class="">
-          <p class="small text-muted m-0 mb-0">In @Model.Rows[row]["SubCatName"]- RS. @Model.Rows[row]["Price"]</p>
-          <p class="small text-muted m-0 mb-2"> @Model.Rows[row]["ProdDesc"]</p>
-        </div>
-      </div>
-      <div style="width:80px;margin-left: auto; margin-right:0px">        
-        <img src="" loading="lazy" style="width:80px;height:80px; object-fit: cover;" class="img-fluid rounded">        
-        <div class=" text-success ml-auto align-items-end counter-display counter-plus" style="font-size:15px; margin-right:10%; width:80px;font-weight:200;padding:2px 12.5px">         
-              <div class="qty-btn-grp" id="">
-                  <div class="Qty-btn pr-0 pt-0 counter-plus" onclick="" style="width:80px; text-align:center">Add</div>
-              </div>          
-      </div>
+    <p>{{form}}</p>  
+    <div class="m-2">
+      <h5 class="m-0 mt-4 mb-3 " id=""></h5>
+      <div class="card-deck subcatbody">
+    <div id="#allProducts" class="fab-container row row-cols-1 row-cols-md-3 g-4">
+    </div>
+  </div>
+    
   </div>
   </div>  
-  </div>
+  </div> 
   <div id="cart-btn" class="fixed-bottom bg-success text-white text-center border-top rounded mb-4" style="display:none;">
     <div id="btnOrder" class="mt-0 pt-3 pb-3" style="width:95%; margin-left:2.5%">
         <div id="btnPlaceOrder" onclick="GoToCart();" class="bg-success d-flex align-items-center text-white rounded">
@@ -63,8 +108,81 @@
         </div>
     </div>
 </div>
+</div>
+<div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="itemModal" aria-hidden="true">  
+   <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+          <p>Item Selected</p>
+          <p id="itemId"></p>
+          <p id="itemName"></p>
+          <p> Add Qty</p>
+          <input type="number" id="qty" name="qty" min="1" max="10" value="1">
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-success" id="addToCartBtn" >Add</button> 
+          </div>
+        </div>
+      </div>
+  </div>
   <div class="footer">
    
   </div>
- 
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+      $.getJSON("{{url_for('.static', filename='json/menuDetails.json')}}", (data)=>{
+        data.forEach((Prod)=>{
+              $('.fab-container').append(   
+                '<div class="col">'+                                                   
+                    '<div id="'+Prod.id+'" class="card mb-3" style="width: 18rem;">'+
+                      '<img src="'+Prod.img_url+'" class="card-img-top" alt="...">'+
+                      '<div class="card-body">'+
+                      '<h5 class="card-title"> '+Prod.Name+'</h5>'+
+                      '<p class="card-text">'+Prod.Category+'</p>'+                      
+                      '<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#itemModal" onclick="PopQty('+Prod.id+')" class="card-text">Add</button>'+                      
+                      '</div>'+
+                      '</div>'+
+                      '</div>' )                
+        });
+    });
+  });  
+  function PopQty(id){
+    const myModal = document.getElementById('itemModal');
+    const myInput = document.getElementById('addToCartBtn')
+    myInput.addEventListener('click',AddItemToCart)
+    $.getJSON("{{url_for('.static', filename='json/menuDetails.json')}}", (data)=>{
+      data.forEach((Prod)=>{
+        if(Prod.id==id){           
+            $('#itemId').html(Prod.id);
+            $('#itemName').html(Prod.Name);
+          }
+      });
+    });
+  };
+  function AddItemToCart(){   
+    item = document.getElementById('itemId').innerHTML;
+    qty = $('#qty').val();
+    var itemData = {
+      "id": item,
+      "qty": qty
+    };
+    console.log(itemData);
+
+    $.ajax({
+      url: "/addToCart",
+      type: "POST",
+      data: JSON.stringify(itemData),
+      contentType: "application/json",
+      dataType: 'json',
+      success: function(result) {
+        if(result.Result == '1'){
+          alert("Item Added to Cart");
+        }                           
+      },
+      error: function (errorMeesage) {
+        console.log(errorMeesage);
+      }
+    });          
+  }
+ </script>
   {% endblock %}

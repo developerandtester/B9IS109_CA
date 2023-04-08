@@ -4,23 +4,17 @@
 <div id="cartpage" class="osahan-cart">
     <div class="p-3 border-bottom">
         <div class="d-flex align-items-center">
-            <a class="font-weight-bold text-success text-decoration-none" href="@Url.Action("Index", "Home")" onclick="OrdTypeChange()">
+            <a class="font-weight-bold text-success text-decoration-none" href="" onclick="OrdTypeChange()">
                 <i style="font-size: 30px" class="icofont-rounded-left back-page"></i>
             </a>
             <h5 class="font-weight-bold m-0">Cart</h5>
-            <a class="ml-auto" href="@Url.Action("Index", "Home")"><i style="font-size: 25px;" class="icofont-home text-success"></i></a>
+            <a class="ml-auto" href=""><i style="font-size: 25px;" class="icofont-home text-success"></i></a>
             <a class="toggle ml-auto" href="#"><i class="icofont-navigation-menu"></i></a>
         </div>
     </div>
     <div class="osahan-body">
     </br>
-    <h5 class="font-weight-bold m-0">Cart is Empty</h5>
-            <div id="home-btn" class="fixed-bottom bg-success text-white text-center border-top rounded mb-4">
-                <div id="btnOrder" class="mt-0 pt-3" style="width:95%; margin-left:2.5%">
-                    <div id="btnPlaceOrder" onclick="GoToHome();" class="d-flex align-items-center rounded">
-                        <i style="font-size: 30px" class="icofont-rounded-left back-page"></i><h6 id="btn-cart-data" class="m-0">Go To Menu</h6>
-                    </div>
-                </div>
-            </div>
+    <h5 class="font-weight-bold m-0">Cart is Empty</h5>            
      </div>
+     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 {%endblock%}
