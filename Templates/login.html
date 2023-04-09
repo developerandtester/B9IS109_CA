@@ -2,17 +2,27 @@
 
 
 {% block content %}
+<style>
+   body {
+      background-color: #F9E79F;
+  }
 
-            <div class="container-fluid">
-                <form class="form-inline" method="post">
+  h1 {
+      color: #E74C3C;
+      text-align: center;
+  }
+  
+</style>
+<h1>Login</h1>
+                <form method="post">
                   <input type="text" class="form-control" placeholder="Username" id="txtUser" name="username" value="">
                    <input type="password" class="form-control" placeholder="Password" id="txtPass" name="password" value="">
-                  <button type="button" class="btn btn-primary" onclick="login()">Login</button>
+                  <button onclick="login()">Login</button>
                 </form>
                 
                   <div class="container">
                   <br>
-                 <p>No account? <a href='/register'>Register here</a>.</p>
+                 <p>No account? <a href='/signup'>Register here</a>.</p>
                  <br>
                   
                 </div>

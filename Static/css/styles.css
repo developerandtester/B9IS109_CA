@@ -203,6 +203,59 @@ body {
   }
 }
 
+
+form {
+  margin: 0 auto;
+  max-width: 600px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #555;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: solid 1px #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+input[type="submit"] {
+  background-color: #E74C3C;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button {
+  background-color: #E74C3C;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px!important;
+  cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background-color: #C0392B;
+}
+
+button:hover {
+  background-color: #C0392B;
+}
+
 /* Admin page styles */
 .admin-container {
   margin-top: 100px;

@@ -1,40 +1,113 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<style>
+    body {
+        background-color: #F9E79F;
+    }
+    .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;        
+        color: #E74C3C;
+        padding: 20px;
+      }
+      
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #E74C3C;
+        border-radius: 5px!important;
+        margin-bottom: 20px;
+      }
+      
+      thead {
+        background-color: #E74C3C;
+        color: #F9E79F;
+      }
+      
+      th, td {
+        padding: 10px;
+        text-align: left;
+      }
+      
+      th {
+        font-weight: bold;
+      }
+      
+      tr:nth-child(even) {
+        background-color: #F9E79F;
+      }
+      
+      button {
+        background-color: #E74C3C;
+        color: #F9E79F;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        margin: 0 5px;
+        cursor: pointer;
+      }
+      
+      button:hover {
+        background-color: #F44336;
+      }
+      
+    </style>
+
 <div id="cartpage" class="osahan-cart">
-   
-    
     </br>
-    {% if cart is defined %}
-    {% set total = [0]  %}
-    {% for key,value in cart.iterrows() %}    
-    {% set _ = total.append(total.pop() + value['amount']|float)  %}
-    {{ value['itemName'] }} {{ value['qty'] }} {{ value['amount'] }}<br>
-    {% endfor %}
-    {{ total[0] }}
-    <button onclick="GoToCheckout()">Go to Checkout</button>
-    {% else %}
-    <div class="osahan-body">
-        <div class="p-3 border-bottom">
-            <div class="d-flex align-items-center">
-                <a class="font-weight-bold text-success text-decoration-none" href="" onclick="OrdTypeChange()">
-                    <i style="font-size: 30px" class="icofont-rounded-left back-page"></i>
-                </a>
-                <h5 class="font-weight-bold m-0">Cart</h5>
-                <a class="ml-auto" href=""><i style="font-size: 25px;" class="icofont-home text-success"></i></a>
-                <a class="toggle ml-auto" href="#"><i class="icofont-navigation-menu"></i></a>
-            </div>
-        </div> <h5 class="font-weight-bold m-0">Cart is Empty</h5>            
-    </div>    
-    {% endif %}
+    <div class="container">
+        {% if cart is defined %}
+          <table>
+            <thead>
+              <tr>
+                <th>Item Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% set total = [0] %}
+              {% for key,value in cart.iterrows() %}    
+              {% set _ = total.append(total.pop() + value['amount']|float) %}
+              <tr>
+                <td>{{ value['itemName'] }}</td>
+                <td>
+                  <button onclick="decreaseQty('{{ key }}')">-</button>
+                  <span id="{{ key }}-qty">{{ value['qty'] }}</span>
+                  <button onclick="increaseQty('{{ key }}')">+</button>
+                </td>
+                <td>{{ value['amount'] }}</td>
+              </tr>
+              {% endfor %}
+              <tr>
+                <td>Total:</td>
+                <td></td>
+                <td>{{ total[0] }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <button onclick="GoToHome()">Add Other Items</button> 
+          <br>
+          <button onclick="GoToCheckout()">Go to Checkout</button>
+        {% else %}
+          <p>Your cart is empty.</p>
+        {% endif %}
+      </div>      
+    </div>
 
 
-   
-   
+
+
      <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
         function GoToCheckout(){
             window.location.href = "/checkout";
+        }
+        function GoToHome(){
+            window.location.href = "/";
         }
     </script>
 {%endblock%}

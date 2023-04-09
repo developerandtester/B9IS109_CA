@@ -42,7 +42,7 @@ def home():
     cursor.execute('SELECT * FROM pract_database.tbl_users')
     data = cursor.fetchall()
     cursor.close()
-    return render_template('/index.html',form=str(data))
+    return render_template('/index.html',form=str(data),cart=session['cart'],is_logged_in=session['is_logged_in'])
 
 @app.route("/login",methods = ['GET',"POST"])
 def login():
