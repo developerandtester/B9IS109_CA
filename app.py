@@ -46,7 +46,7 @@ def home():
 
 @app.route("/login",methods = ['GET',"POST"])
 def login():
-     return render_template('/login.html',form='')
+     return render_template('/login.html')
  
 @app.route("/logout",methods = ['GET',"POST"])
 def logout():    
@@ -137,11 +137,17 @@ def addUser():
             'userEirCode':userEirCode
         }
         insert_user_data(data)
+        mydb.reconnect()
+        cursor = mydb.cursor()
+        query = "SELECT * FROM tbl_users WHERE userName = %s"
+        cursor.execute(query, (userName,))
+        data2 = cursor.fetchall()
         session['is_logged_in'] = True
         session['userPass'] = userPass
         session['userFirstName'] = userFirstName
         session['userLastName'] = userLastName
         session['userName'] = userName
+        session['userID'] = data2[0][0]
         session['userDefaultAddr'] = userDefaultAddr
         session['userPhone'] = userPhone
         session['userEirCode'] = userEirCode
@@ -213,6 +219,7 @@ def update_cart():
     data = request.get_json()
     item_id = int(data['id'])
     new_qty = int(data['new_qty'])
+    print(data)
     
     dataCart = pd.read_json(session['cart'])
     
@@ -247,7 +254,17 @@ def checkout():
    
 @app.route("/successful", methods = ['GET',"POST"])
 def successful():
-    return render_template('/successful.html')
+    order_id = session.get('order_id')
+
+    # If the order ID is not present in the session, redirect to the home page
+    if not order_id:
+        return redirect(url_for('home'))
+   
+
+    # Calculate the tax and total amount of the order
+    tax = round(order['order_total'] * 0.05, 2)
+    total = round(order['order_total'] + tax, 2)
+    return render_template('/successful.html',cart=pd.read_json(session['cart']))
   
 @app.route("/about", methods = ['GET',"POST"])
 def about():
@@ -260,8 +277,6 @@ def contact():
 @app.route("/order", methods = ['GET',"POST"])
 def order():
     if(request.method == 'POST'):
-        
-             
         orderDate = datetime.now().strftime('%Y-%m-%d')
         orderTime = datetime.now().strftime('%H:%M:%S')        
         customer_id=session['userID']
@@ -278,14 +293,15 @@ def order():
         mycursor.execute(sql, val)
         order_id = mycursor.lastrowid
         mydb.commit()
+        session['orderID'] = order_id
     
         for index, row in df.iterrows():
             mydb.reconnect()
             cursor = mydb.cursor()
             sql = """INSERT INTO tbl_orderdetails
-                    (orderID, productID, productQuantity, productPrice)
-                     VALUES (%s, %s, %s, %s)"""
-            cursor.execute(sql, (order_id, row['item'], row['qty'], row['price']))
+                    (orderID, productID, productQuantity, productPrice,productName)
+                     VALUES (%s, %s, %s, %s,%s)"""
+            cursor.execute(sql, (order_id, row['item'], row['qty'], row['price'],row['itemName']))
             mydb.commit()
         return jsonify({'Result': '1'})
 
@@ -313,6 +329,50 @@ def admin():
     
     # Render the admin template with the orders and order details
     return render_template('admin.html', orders=orders)
+
+@app.route('/pastorders')
+def pastorders():
+    if not session.get('is_logged_in'):
+        return redirect(url_for('login'))
+    
+    # Retrieve past orders of the user from the database
+    mydb.reconnect()
+    cursor = mydb.cursor()
+    query = "SELECT * FROM tbl_orders WHERE customerID = %s"
+    cursor.execute(query, (session['userID'],))
+    orders = cursor.fetchall()
+    
+    # Iterate over the orders and retrieve order details and status
+    orders_data = []
+    for order in orders:
+        order_data = {
+            'orderId': order[0],
+            'orderDate': order[4],
+            'totalAmount': order[3],
+            'status': order[6],
+            'items': []
+        }
+        
+        # Retrieve order items from the database
+        query = "SELECT * FROM tbl_orderdetails WHERE orderId = %s"
+        cursor.execute(query, (order[0],))
+        order_items = cursor.fetchall()
+        
+        # Iterate over the order items and retrieve their details
+        for order_item in order_items:
+            item_data = {
+                'itemId': order_item[2],
+                'itemName': order_item[5],                
+                'qty': order_item[3],
+                'amount': order_item[4]
+            }
+            order_data['items'].append(item_data)
+        
+        orders_data.append(order_data)
+    
+    cursor.close()
+    
+    return render_template('pastorders.html', orders=orders_data)
 
 
 if __name__ == "__main__":

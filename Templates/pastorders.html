@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    table {
+    border-collapse: collapse;
+    width: 100%;
+    } th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    th {
+        background-color: #F9E79F;
+        color: #333;
+    }
+    
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    
+    h1 {
+        background-color: #E74C3C;
+        color: white;
+        padding: 10px;
+    }
+    
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+    
+    li {
+        margin: 5px 0;
+    }
+</style>
+<h1>My Orders</h1>
+<table>
+<thead>
+<tr>
+<th>Order ID</th>
+<th>Order Date</th>
+<th>Total Amount</th>
+<th>Status</th>
+<th>Items</th>
+</tr>
+</thead>
+<tbody>
+{% for order in orders %}
+<tr>
+<td>{{ order['orderId'] }}</td>
+<td>{{ order['orderDate'] }}</td>
+<td>{{ order['totalAmount'] }}</td>
+<td>{{ order['status'] }}</td>
+<td>
+<ul>
+{% for item in order['items'] %}
+<li>{{ item['itemName'] }} {{ item['qty'] }} {{ item['amount'] }} </li>
+{% endfor %}
+</ul>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% endblock %}

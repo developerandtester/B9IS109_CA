@@ -118,7 +118,9 @@
     </tr>
   </thead>
   <tbody>
+    {% set total = [0] %}
     {% for key, value in cart.iterrows() %}
+    {% set _ = total.append(total.pop() + value['amount']|float) %}
   <tr>
     <td>{{ value.itemName }}</td>
     <td>{{ value.qty|int }}</td>
@@ -130,7 +132,7 @@
   <tfoot>
     <tr>
       <td colspan="3">Total:</td>
-      <td>{{ total }}</td>
+      <td>{{ total[0] }}</td>
     </tr>
   </tfoot>
 </table>

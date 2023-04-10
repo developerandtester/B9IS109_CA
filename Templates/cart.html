@@ -75,9 +75,9 @@
               <tr>
                 <td>{{ value['itemName'] }}</td>
                 <td>
-                  <button onclick="decreaseQty('{{ key }}')">-</button>
-                  <span id="{{ key }}-qty">{{ value['qty'] }}</span>
-                  <button onclick="increaseQty('{{ key }}')">+</button>
+                  <button onclick="decreaseQty('{{ value['item'] }}')">-</button>
+                  <span id="{{ value['item'] }}-qty">{{ value['qty'] }}</span>
+                  <button onclick="increaseQty('{{ value['item'] }}')">+</button>
                 </td>
                 <td>{{ value['amount'] }}</td>
               </tr>
@@ -108,6 +108,38 @@
         }
         function GoToHome(){
             window.location.href = "/";
+        }
+        function decreaseQty(id){
+          var data = {id: id, new_qty: -1};
+          $.ajax({
+            url: '/update_cart',
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            dataType: 'json',
+            success: function(response){
+              if(response == 'success'){
+                var qty = parseInt($('#' + id + '-qty').text());
+                $('#' + id + '-qty').text(qty - 1);
+              }
+            }
+          });
+        }
+        function increaseQty(id){
+          var data = {id: id, new_qty: 1};
+          $.ajax({
+            url: '/update_cart',
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            dataType: 'json',
+            success: function(response){
+              if(response == 'success'){
+                var qty = parseInt($('#' + id + '-qty').text());
+                $('#' + id + '-qty').text(qty + 1);
+              }
+            }
+          });
         }
     </script>
 {%endblock%}

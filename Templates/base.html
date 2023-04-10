@@ -15,6 +15,9 @@
     </div>
     <ul class="menu">
       <li><a href="/index">Home</a></li>
+      {% if session['useraccess'] == 1 %}
+      <li><a href="/admin">Admin</a></li>
+      {%endif%}
       <li><a href="/cart">Cart</a></li>
       {% if session['is_logged_in'] is true %}
       <li><a href="/logout">Logout</a></li>
