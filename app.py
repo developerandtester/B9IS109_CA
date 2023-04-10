@@ -11,7 +11,7 @@ auth = HTTPBasicAuth()
 
 
 
-app = Flask(__name__)
+app = Flask(__name__,template_folder='Templates')
 app.config['SECRET_KEY'] = 'myWebCA'
 
 
