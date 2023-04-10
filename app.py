@@ -37,7 +37,7 @@ def home():
     else:
         session['cart']=session['cart']
     cursor = mydb.cursor()
-    cursor.execute('SELECT * FROM pract_database.tbl_users')
+    cursor.execute('SELECT * FROM tbl_users')
     data = cursor.fetchall()
     cursor.close()
     return render_template('/index.html',form=str(data),cart=session['cart'],is_logged_in=session['is_logged_in'])
@@ -151,7 +151,7 @@ def verifyUser():
         password = data['Password']
         hashpassword = hashlib.md5(password.encode("utf-8")).hexdigest()
         cursor = mydb.cursor()
-        cursor.execute('SELECT * FROM pract_database.tbl_users WHERE userName = %s AND userPass = %s', (user, str(hashpassword)))
+        cursor.execute('SELECT * FROM tbl_users WHERE userName = %s AND userPass = %s', (user, str(hashpassword)))
         data2 = cursor.fetchall()
         cursor.close()                        
         if len(data2) > 0:   
