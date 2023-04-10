@@ -1,4 +1,169 @@
 {% extends 'base.html' %}
 {% block content %}
+<style>
+    body {
+        background-color: #F9E79F;
+    }
+    .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;        
+        color: #E74C3C;
+        padding: 20px;
+      }
+      
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #E74C3C;
+        border-radius: 5px!important;
+        margin-bottom: 20px;
+      }
+      
+      thead {
+        background-color: #E74C3C;
+        color: #F9E79F;
+      }
+      
+      th, td {
+        padding: 10px;
+        text-align: left;
+      }
+      
+      th {
+        font-weight: bold;
+      }
+      
+      tr:nth-child(even) {
+        background-color: #F9E79F;
+      }
+      
+      button {
+        background-color: #E74C3C;
+        color: #F9E79F;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        margin: 0 5px;
+        cursor: pointer;
+      }
+      
+      button:hover {
+        background-color: #F44336;
+      }
+      
+    </style><style>
+        body {
+            background-color: #F9E79F;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;        
+            color: #E74C3C;
+            padding: 20px;
+          }
+          
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #E74C3C;
+            border-radius: 5px!important;
+            margin-bottom: 20px;
+          }
+          
+          thead {
+            background-color: #E74C3C;
+            color: #F9E79F;
+          }
+          
+          th, td {
+            padding: 10px;
+            text-align: left;
+          }
+          
+          th {
+            font-weight: bold;
+          }
+          
+          tr:nth-child(even) {
+            background-color: #F9E79F;
+          }
+          
+          button {
+            background-color: #E74C3C;
+            color: #F9E79F;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin: 0 5px;
+            cursor: pointer;
+          }
+          
+          button:hover {
+            background-color: #F44336;
+          }
+          
+        </style>
+<h1>Checkout</h1>
+<table>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Quantity</th>
+      <th>Price</th>
+      <th>Subtotal</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for key, value in cart.iterrows() %}
+  <tr>
+    <td>{{ value.itemName }}</td>
+    <td>{{ value.qty|int }}</td>
+    <td>{{ value.amount }}</td>
+    <td>{{ value.qty|float * value.amount|float }}</td>
+  </tr>
+{% endfor %}
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="3">Total:</td>
+      <td>{{ total }}</td>
+    </tr>
+  </tfoot>
+</table>
+<div>
+  <label for="name">Name:</label>
+  <label>{{ session['userFirstName'] }} {{ session['userLastName'] }}</label>
+</div>
+<div>
+  <label for="address">Address:</label>
+  <label>{{ session['userDefaultAddr'] }}</label>
+</div>
+<div>
+  <label for="phone">Phone:</label>
+  <label> {{ session['userPhone'] }}</label>
+</div> 
+<button type="submit" onclick="SubmitOrder()">Order</button>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+  function SubmitOrder() {
+    $.ajax({
+      url: '/order',
+      type: 'POST',
+      data: {
+        'name': '{{ session['userFirstName'] }} {{ session['userLastName'] }}',
+        'address': '{{ session['userDefaultAddr'] }}',
+        'phone': '{{ session['userPhone'] }}',
+        'total': '{{ total }}'
+      },
+      success: function(response) {
+        console.log(response);
+        window.location.href = '/successful';
+      }
+    });
+  }
+</script>
 {% endblock %}

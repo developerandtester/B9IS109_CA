@@ -1,4 +1,48 @@
 {%extends 'base.html' %}
 {% block content %}
-
+<div class="container mt-3">
+    <h1>Orders</h1>
+    {% for order in orders %}
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5>Order #{{ order.ordersID }}</h5>
+                <p>Order date: {{ order.orderDate }} {{ order.orderTime }}</p>
+                <p>Order value: {{ order.orderValue }}</p>
+                <p>Order status: {{ order.orderStatus }}</p>
+                <form method="post">
+                    <input type="hidden" name="order_id" value="{{ order.ordersID }}">
+                    <div class="form-group">
+                        <label for="status">Change status:</label>
+                        <select class="form-control" name="status" id="status" onchange="this.form.submit()">
+                            <option value="new" {% if order.orderStatus == 'new' %} selected {% endif %}>New</option>
+                            <option value="completed" {% if order.orderStatus == 'completed' %} selected {% endif %}>Completed</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Order Details</h5>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order_detail in order.details %}
+                            <tr>
+                                <td>{{ order_detail.productID }}</td>
+                                <td>{{ order_detail.productQuantity }}</td>
+                                <td>{{ order_detail.productPrice }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> 
 {%endblock%}

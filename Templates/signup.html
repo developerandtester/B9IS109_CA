@@ -21,7 +21,7 @@
 
 <h1>Sign Up</h1>
 
-<form>
+
   <label for="userFirstName">First Name:</label>
   <input type="text" id="userFirstName" name="userFirstName">
 
@@ -43,8 +43,8 @@
   <label for="userPhone">Phone:</label>
   <input type="text" id="userPhone" name="userPhone">
 
-  <input type="submit" value="Sign Up" onclick="validateForm()">
-</form>
+  <button value="SignUp" onclick="validateForm()">SignUp</button>
+
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
   function getAddress() {
@@ -72,19 +72,54 @@
     }
   }
   function validateForm() {
-    const userPhone = document.getElementById('userPhone').value;
-    const userEmail = document.getElementById('userEmail').value;
+    const userPhone = document.getElementById('userPhone').value;    
+    const userDefaultAddr= document.getElementById('userDefaultAddr').value; 
+    const userName= document.getElementById('userName').value; 
+    const userFirstName= document.getElementById('userFirstName').value; 
+    const userLastName= document.getElementById('userLastName').value; 
+    const userPass= document.getElementById('userPass').value; 
+    const eircode= document.getElementById('eircode').value;
+
+    var u ={
+      userPhone:userPhone,
+      userDefaultAddr:userDefaultAddr,
+      userName:userName,
+      userFirstName:userFirstName,
+      userLastName:userLastName,
+      userPass:userPass,
+      eircode:eircode      
+    }
 
     if (!isValidPhone(userPhone)) {
       alert('Invalid phone number!');
       return false;
     }
 
-    if (!isValidEmail(userEmail)) {
-      alert('Invalid email address!');
-      return false;
-    }
-
+   
+    $.ajax({
+      url: "/addUser",
+      type: "POST",
+      data: JSON.stringify(u),
+      contentType: "application/json",
+      dataType: 'json',
+      success: function(result) {
+        if(result.Result=="Error: SQL injection detected!"){
+          alert('Error: SQL injection detected!')
+          return false;
+        }
+        else if(result.Result=="User already exists!"){
+          alert('User Already Exists!!!')
+          return false;
+        }
+        else if(result.Result=="User added successfully!"){
+          alert('User Created Successfully!!!')
+          window.location.href='/cart';      
+        }                                   
+      },
+      error: function (errorMeesage) {
+        console.log(errorMeesage);
+      }
+    });          
     return true;
   }
 

@@ -5,6 +5,7 @@ from flask_httpauth import HTTPBasicAuth
 import pandas as pd
 import json
 import http.client
+from datetime import datetime
 
 auth = HTTPBasicAuth()
 
@@ -22,9 +23,6 @@ mydb = mysql.connector.connect(
   password="pass",
   database="pract_database"
 )
-
-# Connect to the MySQL database
-
 
 
 @app.route("/", methods = ['GET',"POST"])
@@ -81,7 +79,7 @@ def check_sql_injection(text):
 # check for user existence
 def check_user_existence(username):
     cursor = mydb.cursor()
-    query = "SELECT * FROM users WHERE userName = %s"
+    query = "SELECT * FROM tbl_users WHERE userName = %s"
     cursor.execute(query, (username,))
     user = cursor.fetchone()
     if user is not None:
@@ -91,30 +89,37 @@ def check_user_existence(username):
 # insert user data into the database
 def insert_user_data(data):
     cursor = mydb.cursor()
-    query = "INSERT INTO users (userPass, userFirstName, userLastName, userName, userDefaultAddr, userPhone, userAccess) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    cursor.execute(query, (data['userPass'], data['userFirstName'], data['userLastName'], data['userName'], data['userDefaultAddr'], data['userPhone'], 2))
+    query = "INSERT INTO tbl_users (userPass, userFirstName, userLastName, userName, userDefaultAddr, userPhone, userAccess,userEIRcode) VALUES (%s, %s, %s, %s, %s, %s, %s,%s)"
+    cursor.execute(query, (data['userPass'], data['userFirstName'], data['userLastName'], data['userName'], data['userDefaultAddr'], data['userPhone'], 2,data['userEirCode']))
     mydb.commit()
 
 # Flask route to handle the signup form
 @app.route('/signup', methods=['GET', 'POST'])
-def signup():
+def signup():    
+   return render_template('signup.html')
+
+@app.route("/addUser", methods=['GET','POST'])
+def addUser():
     if request.method == 'POST':
         # get form data
-        userPass = request.form['userPass']
-        userFirstName = request.form['userFirstName']
-        userLastName = request.form['userLastName']
-        userName = request.form['userName']
-        userDefaultAddr = request.form['userDefaultAddr']
-        userPhone = request.form['userPhone']
+        input = request.get_json()
+        userPass = input['userPass']
+        userFirstName = input['userFirstName']
+        userLastName = input['userLastName']
+        userName = input['userName']
+        userDefaultAddr = input['userDefaultAddr']
+        userPhone = input['userPhone']
+        userEirCode=input['eircode']
         
-        
+        userPass=str(hashlib.md5(userPass.encode("utf-8")).hexdigest())
         # check for SQL injection
         if check_sql_injection(userPass) or check_sql_injection(userFirstName) or check_sql_injection(userLastName) or check_sql_injection(userName) or check_sql_injection(userDefaultAddr) or check_sql_injection(userPhone):
-            return 'Error: SQL injection detected!'
+            return jsonify({'Result':'Error: SQL injection detected!'})
         
         # check for user existence
         if check_user_existence(userName):
-            return 'User already exists!'
+
+            return jsonify({'Result': 'User already exists!'})
         
         # insert user data into the database
         data = {
@@ -123,14 +128,18 @@ def signup():
             'userLastName': userLastName,
             'userName': userName,
             'userDefaultAddr': userDefaultAddr,
-            'userPhone': userPhone
+            'userPhone': userPhone,
+            'userEirCode':userEirCode
         }
         insert_user_data(data)
-        
-        return 'User created successfully!'
-    else:
-        return render_template('signup.html')
-
+        session['userPass'] = userPass
+        session['userFirstName'] = userFirstName
+        session['userLastName'] = userLastName
+        session['userName'] = userName
+        session['userDefaultAddr'] = userDefaultAddr
+        session['userPhone'] = userPhone
+        session['userEirCode'] = userEirCode
+        return jsonify({'Result': 'User added successfully!'})
  
 @app.route("/verifyUser", methods = ['GET',"POST"])
 def verifyUser():
@@ -143,9 +152,17 @@ def verifyUser():
         cursor.execute('SELECT * FROM pract_database.tbl_users WHERE userName = %s AND userPass = %s', (user, str(hashpassword)))
         data2 = cursor.fetchall()
         cursor.close()                        
-        if len(data2) > 0:
-            session['user'] = str(data2[0])
+        if len(data2) > 0:   
+            session['userID']=data2[0][0]
+            session['userFirstName'] = data2[0][2]
+            session['userLastName'] = data2[0][3]
+            session['userName'] = data2[0][4]
+            session['userDefaultAddr'] = data2[0][5]
+            session['userPhone'] = data2[0][6]
+            session['userEirCode'] = data2[0][8]
+            session['user'] = str(data2[0][3])
             session['is_logged_in'] = True
+            session['useraccess'] = data2[0][7]
             return jsonify({'Result': '1'})
         return jsonify({'error' : 'Missing data!'})
     
@@ -218,6 +235,7 @@ def checkout():
     elif('is_logged_in' not in session):
         return redirect(url_for('login'))
     else:
+        print(session['cart'])
         return render_template('/checkout.html',cart=pd.read_json(session['cart']))
    
 @app.route("/successful", methods = ['GET',"POST"])
@@ -231,6 +249,48 @@ def about():
 @app.route("/contact", methods = ['GET',"POST"])
 def contact():
     return render_template('/contact.html')
+
+@app.route("/order", methods = ['GET',"POST"])
+def order():
+    if(request.method == 'POST'):
+        
+             
+        orderDate = datetime.now().strftime('%Y-%m-%d')
+        orderTime = datetime.now().strftime('%H:%M:%S')        
+        customer_id=session['userID']
+        dataCart = pd.read_json(session['cart'])
+        df = pd.DataFrame(dataCart, columns=['item', 'qty', 'itemName', 'price', 'amount'])
+        session
+
+    # Calculate order value
+        orderValue = df['amount'].sum() 
+        mycursor = mydb.cursor()
+        sql = "INSERT INTO tbl_orders (customerID, addressID, orderValue, orderDate, orderTime,orderStatus) VALUES (%s, %s, %s, %s, %s,%s)"
+        val = (customer_id, '0', orderValue, orderDate, orderTime,'New')
+        mycursor.execute(sql, val)
+        order_id = mycursor.lastrowid
+        mydb.commit()
+    
+        for index, row in df.iterrows():
+            cursor = mydb.cursor()
+            sql = """INSERT INTO tbl_orderdetails
+                    (orderID, productID, productQuantity, productPrice)
+                     VALUES (%s, %s, %s, %s)"""
+            cursor.execute(sql, (order_id, row['item'], row['qty'], row['price']))
+            mydb.commit()
+        return jsonify({'Result': '1'})
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM tbl_orders")
+    orders = cursor.fetchall()
+    for order in orders:
+        cursor.execute("SELECT * FROM tbl_orderdetails WHERE orderID = %s", (order['ordersID'],))
+        order['details'] = cursor.fetchall()
+    
+    # Render the admin template with the orders and order details
+    return render_template('admin.html', orders=orders)
 
 if __name__ == "__main__":
     app.run(debug=True)
