@@ -282,6 +282,18 @@ def order():
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
+    if request.method == 'POST':
+        # Get the order ID and status from the form
+        order_id = request.form.get('order_id')
+        status = request.form.get('status')
+        
+        # Update the order status in the database
+        cursor = mydb.cursor()
+        query = "UPDATE tbl_orders SET orderStatus = %s WHERE ordersID = %s"
+        values = (status, order_id)
+        cursor.execute(query, values)
+        mydb.commit()
+        
     cursor = mydb.cursor(dictionary=True)
     cursor.execute("SELECT * FROM tbl_orders")
     orders = cursor.fetchall()
@@ -291,6 +303,7 @@ def admin():
     
     # Render the admin template with the orders and order details
     return render_template('admin.html', orders=orders)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
