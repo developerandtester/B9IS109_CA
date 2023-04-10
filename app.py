@@ -6,6 +6,7 @@ import pandas as pd
 import json
 import http.client
 from datetime import datetime
+import os
 
 auth = HTTPBasicAuth()
 
@@ -180,9 +181,8 @@ def addToCart():
         item = int(data['id'])
         itemName = (data['name'])
         qty = int(data['qty'])        
-        dataCart=pd.read_json(session['cart'])
-        fileItems = json.loads(open('static/json/menuDetails.json'))
-        itemsJson = pd.read_json(fileItems)
+        dataCart=pd.read_json(session['cart'])        
+        itemsJson = pd.read_json('static/json/menuDetails.json')
         price=float(itemsJson[itemsJson['id'] == item]['Value'])
         amount=float(price*qty)
         data2=[[item,qty,itemName,price,amount]]

@@ -1,0 +1,86 @@
+[
+    {
+        "id": 1,
+        "Name": "Cheeseburger",
+        "Category": "Burgers",
+        "Value": 8.99,
+        "img_url":"https://images.pexels.com/photos/2282532/pexels-photo-2282532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    },
+    {
+        "id": 2,
+        "Name": "Chicken Burger",
+        "Category": "Burgers",
+        "Value": 7.99,
+        "img_url":"https://images.pexels.com/photos/2282532/pexels-photo-2282532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"     
+    },
+    {
+        "id": 3,
+        "Name": "Veggie Burger",
+        "Category": "Burgers",
+        "Value":7.49,
+       "img_url":"https://images.pexels.com/photos/2282532/pexels-photo-2282532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    },
+    {
+        "id": 4,
+        "Name": "Fries",
+        "Category": "Sides",
+        "Value": 2.99,  
+       "img_url":"https://images.pexels.com/photos/2282532/pexels-photo-2282532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"        
+    },
+    {
+        "id": 5,
+        "Name": "Onion Rings",
+        "Category": "Sides",
+        "Value": 3.99,
+       "img_url":"https://images.pexels.com/photos/2282532/pexels-photo-2282532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    },
+    {
+        "id": 6,
+        "Name":"Garlic Fries",
+        "Category": "Sides",
+        "Value":3.49,
+       "img_url":"https://images.pexels.com/photos/2282532/pexels-photo-2282532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"        
+    },
+    {
+        "id": 7,
+        "Name": "Coke",
+        "Category": "Drinks",
+        "Value": 1.99,
+       "img_url":"https://images.pexels.com/photos/2282532/pexels-photo-2282532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    },
+    {
+        "id": 8,
+        "Name": "Sprite",
+        "Category": "Drinks",
+        "Value": 1.99,
+       "img_url":"https://images.pexels.com/photos/2282532/pexels-photo-2282532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    },
+    {
+        "id": 9,
+        "Name": "Vanilla Shake",
+        "Category": "Drinks",
+        "Value": 3.99,
+       "img_url":"https://images.pexels.com/photos/2282532/pexels-photo-2282532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"        
+    },
+    {
+        "id": 10,
+        "Name": "Chocolate Shake",
+        "Category": "Drinks",
+        "Value": 3.99,
+       "img_url":"https://images.pexels.com/photos/2282532/pexels-photo-2282532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    },
+    {
+        "id": 11,
+        "Name": "Brownie",
+        "Category": "Desserts",
+        "Value": 2.99,
+       "img_url":"https://images.pexels.com/photos/2282532/pexels-photo-2282532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    },
+    {
+        "id": 12,
+        "Name": "Cheese Cake",
+        "Category": "Desserts",
+        "Value": 2.99,
+       "img_url":"https://images.pexels.com/photos/2282532/pexels-photo-2282532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    }
+]
