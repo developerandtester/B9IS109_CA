@@ -36,6 +36,7 @@ def home():
         session['cart']=pd.DataFrame(columns=['item','qty','itemName','price','amount']).to_json()    
     else:
         session['cart']=session['cart']
+    mydb.reconnect()
     cursor = mydb.cursor()
     cursor.execute('SELECT * FROM tbl_users')
     data = cursor.fetchall()
@@ -79,6 +80,7 @@ def check_sql_injection(text):
 
 # check for user existence
 def check_user_existence(username):
+    mydb.reconnect()
     cursor = mydb.cursor()
     query = "SELECT * FROM tbl_users WHERE userName = %s"
     cursor.execute(query, (username,))
@@ -89,6 +91,7 @@ def check_user_existence(username):
 
 # insert user data into the database
 def insert_user_data(data):
+    mydb.reconnect()
     cursor = mydb.cursor()
     query = "INSERT INTO tbl_users (userPass, userFirstName, userLastName, userName, userDefaultAddr, userPhone, userAccess,userEIRcode) VALUES (%s, %s, %s, %s, %s, %s, %s,%s)"
     cursor.execute(query, (data['userPass'], data['userFirstName'], data['userLastName'], data['userName'], data['userDefaultAddr'], data['userPhone'], 2,data['userEirCode']))
@@ -150,6 +153,7 @@ def verifyUser():
         user = data['Username']
         password = data['Password']
         hashpassword = hashlib.md5(password.encode("utf-8")).hexdigest()
+        mydb.reconnect()
         cursor = mydb.cursor()
         cursor.execute('SELECT * FROM tbl_users WHERE userName = %s AND userPass = %s', (user, str(hashpassword)))
         data2 = cursor.fetchall()
@@ -266,6 +270,7 @@ def order():
 
     # Calculate order value
         orderValue = df['amount'].sum() 
+        mydb.reconnect()
         mycursor = mydb.cursor()
         sql = "INSERT INTO tbl_orders (customerID, addressID, orderValue, orderDate, orderTime,orderStatus) VALUES (%s, %s, %s, %s, %s,%s)"
         val = (customer_id, '0', orderValue, orderDate, orderTime,'New')
@@ -274,6 +279,7 @@ def order():
         mydb.commit()
     
         for index, row in df.iterrows():
+            mydb.reconnect()
             cursor = mydb.cursor()
             sql = """INSERT INTO tbl_orderdetails
                     (orderID, productID, productQuantity, productPrice)
@@ -290,6 +296,7 @@ def admin():
         status = request.form.get('status')
         
         # Update the order status in the database
+        mydb.reconnect()
         cursor = mydb.cursor()
         query = "UPDATE tbl_orders SET orderStatus = %s WHERE ordersID = %s"
         values = (status, order_id)
