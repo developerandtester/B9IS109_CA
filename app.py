@@ -181,7 +181,7 @@ def addToCart():
         itemName = (data['name'])
         qty = int(data['qty'])        
         dataCart=pd.read_json(session['cart'])
-        itemsJson = pd.read_json('Static\json\menuDetails.json')
+        itemsJson = pd.read_json('static\json\menuDetails.json')
         price=float(itemsJson[itemsJson['id'] == item]['Value'])
         amount=float(price*qty)
         data2=[[item,qty,itemName,price,amount]]
