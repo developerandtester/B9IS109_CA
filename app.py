@@ -18,10 +18,10 @@ app.config['SECRET_KEY'] = 'myWebCA'
 # Initialize the Flask-MySQL extension
 
 mydb = mysql.connector.connect(
-  host="localhost",
-  user="root",
-  password="pass",
-  database="pract_database"
+  host="eu-cdbr-west-03.cleardb.net",
+  user="bd5b45754d9419",
+  password="cfd3aeb8",
+  database="heroku_f7fc2d46da75047"
 )
 
 
