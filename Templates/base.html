@@ -16,7 +16,12 @@
     <ul class="menu">
       <li><a href="/index">Home</a></li>
       <li><a href="/cart">Cart</a></li>
+      {% if session['is_logged_in'] is true %}
+      <li><a href="/logout">Logout</a></li>
+      {%else%}
       <li><a href="/login">Login</a></li>
+      <li><a href="/register">Register</a></li>
+      {%endif%}
       <li><a href="/about">About Us</a></li>
       <li><a href="/contact">Contact Us</a></li>
     </ul>

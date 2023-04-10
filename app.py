@@ -47,8 +47,9 @@ def login():
      return render_template('/login.html',form='')
  
 @app.route("/logout",methods = ['GET',"POST"])
-def logout():
+def logout():    
     session.clear()
+    session['is_logged_in']=False
     return redirect(url_for('home'))
 
 @app.route("/getAddrFromEIRCode",methods = ['GET',"POST"])
@@ -132,6 +133,7 @@ def addUser():
             'userEirCode':userEirCode
         }
         insert_user_data(data)
+        session['is_logged_in'] = True
         session['userPass'] = userPass
         session['userFirstName'] = userFirstName
         session['userLastName'] = userLastName
