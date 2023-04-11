@@ -154,7 +154,7 @@
       </table>
          <div class="modal-footer">
            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-           <button type="button" class="btn btn-secondary" id="addToCartBtn" >Add</button> 
+           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="addToCartBtn" >Add</button> 
          </div>
        </div>
      </div>
@@ -196,7 +196,7 @@
           // add the product card to the current category row
           let productCard = $('<div class="col">'+
             '<div id="'+Prod.id+'" class="card mb-3" style="width: 18rem; background-color: #E74C3C;">'+
-            '<img src="'+Prod.img_url+'" class="card-img-top" alt="...">'+
+            '<img src="'+Prod.img_url+'" class="card-img-top" style="height: 12rem; object-fit: cover;" alt="...">'+
             '<div class="card-body">'+
             '<h5 class="card-title" style="color: #F9E79F;">'+Prod.Name+'</h5>'+
             '<p class="card-text" style="color: #F9E79F;">'+Prod.Category+'</p>'+
@@ -225,6 +225,7 @@
   function AddItemToCart(){   
     item = document.getElementById('itemId').innerHTML;
     itemName = document.getElementById('itemName').innerHTML;
+    const myModalEl = document.getElementById('itemModal')    
     qty = $('#qty').val();
     var itemData = {
       "id": item,
@@ -241,7 +242,8 @@
       dataType: 'json',
       success: function(result) {
         if(result.Result == '1'){
-          alert("Item Added to Cart");
+          alert("Item Added to Cart");          
+          $('#itemModal').modal('toggle');
         }                           
       },
       error: function (errorMeesage) {
